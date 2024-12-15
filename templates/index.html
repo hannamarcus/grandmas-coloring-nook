@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coloring Nook</title>
+    <style>
+        /* Overall Page Styling */
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(to bottom, #ffefd5, #ffdab9);
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #f76c6c;
+            text-shadow: 2px 2px #ffa07a;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: inline-block;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            font-size: 1em;
+            color: #333;
+            background: #ffe4e1;
+            border: 2px dashed #f76c6c;
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+
+        input[type="file"]:hover {
+            transform: scale(1.05);
+            background: #fff0f0;
+        }
+
+        input[type="submit"] {
+            padding: 10px 20px;
+            font-size: 1.2em;
+            color: #fff;
+            background: #f76c6c;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        input[type="submit"]:hover {
+            background: #ff7f7f;
+            transform: scale(1.1);
+        }
+
+        /* Preview Section Styling */
+        #previewSection {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #previewSection img {
+            max-width: 30%; /* Preview image at 50% of container width */
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        #previewSection h2 {
+            font-size: 1.5em;
+            color: #f76c6c;
+        }
+
+        #downloadLink {
+            font-size: 1.1em;
+            color: #fff;
+            background: #f76c6c;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        #downloadLink:hover {
+            background: #ff7f7f;
+            transform: scale(1.05);
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Grandma's Coloring Nook</h1>
+    <p>Transform your photos into fun coloring pages! Upload an image to get started.</p>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" accept="image/jpeg" required>
+        <br>
+        <input type="submit" value="Generate Coloring Book">
+    </form>
+
+    <div id="previewSection">
+        <h2>Preview:</h2>
+        <img id="previewImage" alt="Color Page Preview">
+        <br>
+        <a id="downloadLink" href="#" download>Download Coloring Page</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Coloring Nook.</p>
+        <p>Powered by Hanna :) </p>
+
+    </footer>
+
+    <script>
+        const uploadForm = document.getElementById("uploadForm");
+        const fileInput = document.getElementById("fileInput");
+        const previewSection = document.getElementById("previewSection");
+        const previewImage = document.getElementById("previewImage");
+        const downloadLink = document.getElementById("downloadLink");
+
+        uploadForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            const response = await fetch("/", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const sketchUrl = URL.createObjectURL(blob);
+
+                // Display the preview section
+                previewSection.style.display = "block";
+
+                // Set the preview image and download link
+                previewImage.src = sketchUrl;
+                downloadLink.href = sketchUrl;
+            } else {
+                alert("Something went wrong! Please try again.");
+            }
+        });
+    </script>
+</body>
+</html>
